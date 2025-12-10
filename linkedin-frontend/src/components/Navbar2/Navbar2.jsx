@@ -1,9 +1,16 @@
 import React, { useState } from 'react'
 import './navbar2.css'
+import HomeIcon from '@mui/icons-material/Home';
+import GroupIcon from '@mui/icons-material/Group';
+import WorkIcon from '@mui/icons-material/Work';
+import MessageIcon from '@mui/icons-material/Message';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import { Link, useLocation } from 'react-router-dom';
 
 const Navbar2 = () => {
 
   const [dropdown, setDropDown] = useState(false)
+  const location = useLocation()
   return (
     <div className='bg-white h-13 flex justify-between py-1 px-5 xl:px-50 fixed top-0 w-full z-1000'>
       <div className='flex gap-2 items-center'>
@@ -22,7 +29,40 @@ const Navbar2 = () => {
           }
         </div>
       </div>
-    </div>
+      <div className='hidden gap-10 md:flex'>
+
+        <Link to={'/feed'} className='flex flex-col items-center cursor-pointer'>
+          <HomeIcon sx={{color:location.pathname==='/feed'?"black":"gray"}} />
+          <div className={`text-sm text-gray-500 ${location.pathname==='/feed'?"border-b-3": ""}`}>Home</div>
+        </Link>
+
+        <Link to={'/mynetwork'} className='flex flex-col items-center cursor-pointer'>
+          <GroupIcon sx={{color:location.pathname==='/mynetwork'?"black":"gray"}} />
+          <div className={`text-sm text-gray-500 ${location.pathname==='/mynetwork'?"border-b-3": ""}`}>My Network</div>
+        </Link>
+
+        <Link to={'/resume'} className='flex flex-col items-center cursor-pointer'>
+          <WorkIcon sx={{color:location.pathname==='/resume'?"black":"gray"}} />
+          <div className={`text-sm text-gray-500 ${location.pathname==='/resume'?"border-b-3": ""}`}>Resume</div>
+        </Link>
+
+        <Link to={'/messages'} className='flex flex-col items-center cursor-pointer'>
+          <MessageIcon sx={{color:location.pathname==='/messages'?"black":"gray"}} />
+          <div className={`text-sm text-gray-500 ${location.pathname==='/messages'?"border-b-3": ""}`}>Message</div>
+        </Link>
+
+        <Link to={'/notification'} className='flex flex-col items-center cursor-pointer'>
+          <div><NotificationsIcon sx={{color:location.pathname==='/notification'?"black":"gray"}} /> <span className='p-1 rounded-full text-sm bg-red-700 text-white'>1</span> </div>
+          <div className={`text-sm text-gray-500 ${location.pathname==='/notification'?"border-b-3": ""}`}>Notification</div>
+        </Link>
+
+        <div className='flex flex-col items-center cursor-pointer'>
+          <img className='w-6 h-6 rounded-full' src='http://res.cloudinary.com/dbraoytbj/image/upload/v1747213557/xwyq1qwjpsythq3dmroo.png' />
+          <div className='text-sm text-gray-500'>Me</div>
+        </div>
+
+      </div>
+    </div> 
   )
 }
 
