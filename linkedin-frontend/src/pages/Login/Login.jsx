@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import GoogleLoginComp from '../../components/GoogleLogin/GoogleLoginComp'
 
 const Login = () => {
   return (
@@ -8,7 +9,7 @@ const Login = () => {
         <div className='text-3xl'>Sign In</div>
 
         <div className='my-5'>
-            Google Login BTN
+            <GoogleLoginComp />
         </div>
         
         <div className='flex items-center gap-2'>

@@ -8,17 +8,22 @@ import Footer from './components/Footer/Footer'
 import { Routes, Route } from 'react-router-dom'
 import SignUp from './pages/SignUp/SignUp'
 import Login from './pages/Login/Login'
+import Navbar2 from './components/Navbar2/Navbar2'
+import Feed from './pages/Feed/Feed'
 
 function App() {
+
+  const isLogin = true;
 
   return (
     <>
       <div className='bg-gray-100 w-full h-full box-border'>
-        <Navbar1 />
+        {isLogin? <Navbar2/> : <Navbar1/>}
         <Routes>
           <Route path='/' element={<LandingPage />} />
           <Route path='/signup' element={<SignUp />} />
           <Route path='/login' element={<Login />} />
+          <Route path='/feed' element={<Feed />} />
         </Routes>
         <Footer />
       </div>
