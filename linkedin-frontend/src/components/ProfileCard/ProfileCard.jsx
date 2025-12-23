@@ -12,6 +12,8 @@ const ProfileCard = () => {
             <img src="http://res.cloudinary.com/dbraoytbj/image/upload/v1747213557/xwyq1qwjpsythq3dmroo.png" alt="" className='rounded-4xl border-2 h-16 w-16 border-white cursor-pointer' />
           </div>
         </div>
+
+        
         <div className='p-5'>
           <div className='text-xl'>Mashhood Danish</div>
           <div className='text-sm my-1'>@Amazon Software Eng</div>
