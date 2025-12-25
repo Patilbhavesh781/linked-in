@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Card from '../../components/Card/Card'
 import ProfileCard from '../../components/ProfileCard/ProfileCard'
 import VideoCameraBackIcon from '@mui/icons-material/VideoCameraBack';
@@ -7,8 +7,17 @@ import ArticleIcon from '@mui/icons-material/Article';
 import { green } from '@mui/material/colors';
 import Advertisement from '../../components/Advertisement/Advertisement';
 import Post from '../../components/Post/Post';
+import Modal from '../../components/Modal/Modal';
+import AddModal from '../../components/AddModal/AddModal';
 
 const Feed = () => {
+
+  const [addPostModal, setAddPostModal] = useState();
+
+  const handleOpenPostModel = ()=>{
+    setAddPostModal(prev=>!prev)
+  }
+
   return (
     <div className='px-5 xl:px-50 py-9 flex gap-5 w-full mt-5 bg-gray-100'>
 
@@ -39,19 +48,19 @@ const Feed = () => {
             <div className='flex gap-2 items-center'>
 
               <img src="http://res.cloudinary.com/dbraoytbj/image/upload/v1747213557/xwyq1qwjpsythq3dmroo.png" alt="" className='rounded-4xl w-13 h-13 border-2 border-white cursor-pointer' />
-              <div className='w-full border py-3 px-3 rounded-3xl cursor-pointer hover:bg-gray-100 '>Start a Post</div>
+              <div onClick={() => setAddPostModal(true)} className='w-full border py-3 px-3 rounded-3xl cursor-pointer hover:bg-gray-100 '>Start a Post</div>
             </div>
 
             <div className='w-full flex mt-3'>
-              <div className='flex gap-2 p-2 cursor-pointer justify-center rounded-lg w-[33%] hover:bg-gray-100'>
+              <div onClick={() => setAddPostModal(true)} className='flex gap-2 p-2 cursor-pointer justify-center rounded-lg w-[33%] hover:bg-gray-100'>
                 <VideoCameraBackIcon sx={{ color: "green" }} />
                 Video
               </div>
-              <div className='flex gap-2 p-2 cursor-pointer justify-center rounded-lg w-[33%] hover:bg-gray-100'>
+              <div onClick={() => setAddPostModal(true)} className='flex gap-2 p-2 cursor-pointer justify-center rounded-lg w-[33%] hover:bg-gray-100'>
                 <ImageIcon sx={{ color: "blue" }} />
                 Photo
               </div>
-              <div className='flex gap-2 p-2 cursor-pointer justify-center rounded-lg w-[33%] hover:bg-gray-100'>
+              <div onClick={() => setAddPostModal(true)} className='flex gap-2 p-2 cursor-pointer justify-center rounded-lg w-[33%] hover:bg-gray-100'>
                 <ArticleIcon sx={{ color: "orange" }} />
                 Article
               </div>
@@ -88,13 +97,17 @@ const Feed = () => {
         <div className='my-5 sticky top-19'>
           <Advertisement />
         </div>
-        
+
       </div>
 
-
+      {
+        addPostModal && <Modal closeModal={handleOpenPostModel} title={"Add a Post"} >
+          <AddModal />
+        </Modal>
+      }
 
     </div>
-  )
+  ) 
 }
 
 export default Feed

@@ -9,6 +9,7 @@ import SignUp from './pages/SignUp/SignUp'
 import Login from './pages/Login/Login'
 import Navbar2 from './components/Navbar2/Navbar2'
 import Feed from './pages/Feed/Feed'
+import MyNetwork from './pages/MyNetwork/MyNetwork'
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
           <Route path='/signup' element={<SignUp />} />
           <Route path='/login' element={<Login />} />
           <Route path='/feed' element={<Feed />} />
+          <Route path='/mynetwork' element={<MyNetwork />} />
         </Routes>
         <Footer />
       </div>
