@@ -14,9 +14,9 @@ const Navbar2 = () => {
   return (
     <div className='bg-white h-13 flex justify-between py-1 px-5 xl:px-50 fixed top-0 w-full z-1000'>
       <div className='flex gap-2 items-center'>
-        <div>
+        <Link to={"/feed"}>
           <img className='w-8 h-8' src={'https://freelogopng.com/images/all_img/1656994981linkedin-icon-png.png'} alt="logo" />
-        </div>
+        </Link>
         <div className='relative'>
           <input className='searchInput w-70 bg-gray-100 rounded-sm h-10 px-4' placeholder='Search' />
           {

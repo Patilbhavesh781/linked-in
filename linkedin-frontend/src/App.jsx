@@ -11,6 +11,8 @@ import Navbar2 from './components/Navbar2/Navbar2'
 import Feed from './pages/Feed/Feed'
 import MyNetwork from './pages/MyNetwork/MyNetwork'
 import Resume from './pages/Resume/Resume'
+import Messages from './components/Messages/Messages'
+import Profile from './pages/Profile/Profile'
 
 
 function App() {
@@ -28,6 +30,8 @@ function App() {
           <Route path='/feed' element={<Feed />} />
           <Route path='/mynetwork' element={<MyNetwork />} />
           <Route path='/resume' element={<Resume />} />
+          <Route path='/messages' element={<Messages />} />
+          <Route path='/profile/:id' element={<Profile />} />
         </Routes>
         <Footer />
       </div>
