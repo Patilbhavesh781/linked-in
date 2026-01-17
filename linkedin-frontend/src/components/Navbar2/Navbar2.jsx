@@ -32,28 +32,28 @@ const Navbar2 = () => {
       <div className='hidden gap-10 md:flex'>
 
         <Link to={'/feed'} className='flex flex-col items-center cursor-pointer'>
-          <HomeIcon sx={{color:location.pathname==='/feed'?"black":"gray"}} />
-          <div className={`text-sm text-gray-500 ${location.pathname==='/feed'?"border-b-3": ""}`}>Home</div>
+          <HomeIcon sx={{ color: location.pathname === '/feed' ? "black" : "gray" }} />
+          <div className={`text-sm text-gray-500 ${location.pathname === '/feed' ? "border-b-3" : ""}`}>Home</div>
         </Link>
 
         <Link to={'/mynetwork'} className='flex flex-col items-center cursor-pointer'>
-          <GroupIcon sx={{color:location.pathname==='/mynetwork'?"black":"gray"}} />
-          <div className={`text-sm text-gray-500 ${location.pathname==='/mynetwork'?"border-b-3": ""}`}>My Network</div>
+          <GroupIcon sx={{ color: location.pathname === '/mynetwork' ? "black" : "gray" }} />
+          <div className={`text-sm text-gray-500 ${location.pathname === '/mynetwork' ? "border-b-3" : ""}`}>My Network</div>
         </Link>
 
         <Link to={'/resume'} className='flex flex-col items-center cursor-pointer'>
-          <WorkIcon sx={{color:location.pathname==='/resume'?"black":"gray"}} />
-          <div className={`text-sm text-gray-500 ${location.pathname==='/resume'?"border-b-3": ""}`}>Resume</div>
+          <WorkIcon sx={{ color: location.pathname === '/resume' ? "black" : "gray" }} />
+          <div className={`text-sm text-gray-500 ${location.pathname === '/resume' ? "border-b-3" : ""}`}>Resume</div>
         </Link>
 
         <Link to={'/messages'} className='flex flex-col items-center cursor-pointer'>
-          <MessageIcon sx={{color:location.pathname==='/messages'?"black":"gray"}} />
-          <div className={`text-sm text-gray-500 ${location.pathname==='/messages'?"border-b-3": ""}`}>Message</div>
+          <MessageIcon sx={{ color: location.pathname === '/messages' ? "black" : "gray" }} />
+          <div className={`text-sm text-gray-500 ${location.pathname === '/messages' ? "border-b-3" : ""}`}>Message</div>
         </Link>
 
         <Link to={'/notification'} className='flex flex-col items-center cursor-pointer'>
-          <div><NotificationsIcon sx={{color:location.pathname==='/notification'?"black":"gray"}} /> <span className='p-1 rounded-full text-sm bg-red-700 text-white'>1</span> </div>
-          <div className={`text-sm text-gray-500 ${location.pathname==='/notification'?"border-b-3": ""}`}>Notification</div>
+          <div><NotificationsIcon sx={{ color: location.pathname === '/notification' ? "black" : "gray" }} /> <span className='p-1 rounded-full text-sm bg-red-700 text-white'>1</span> </div>
+          <div className={`text-sm text-gray-500 ${location.pathname === '/notification' ? "border-b-3" : ""}`}>Notification</div>
         </Link>
 
         <Link to={`/profile/asdfg`} className='flex flex-col items-center cursor-pointer'>
@@ -62,7 +62,7 @@ const Navbar2 = () => {
         </Link>
 
       </div>
-    </div> 
+    </div>
   )
 }
 

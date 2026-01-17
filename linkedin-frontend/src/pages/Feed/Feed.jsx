@@ -14,8 +14,8 @@ const Feed = () => {
 
   const [addPostModal, setAddPostModal] = useState();
 
-  const handleOpenPostModel = ()=>{
-    setAddPostModal(prev=>!prev)
+  const handleOpenPostModel = () => {
+    setAddPostModal(prev => !prev)
   }
 
   return (
@@ -107,7 +107,7 @@ const Feed = () => {
       }
 
     </div>
-  ) 
+  )
 }
 
 export default Feed

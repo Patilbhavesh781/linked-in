@@ -7,6 +7,10 @@ import AddIcon from '@mui/icons-material/Add';
 import ImageModal from '../../components/ImageModal/ImageModal';
 import Modal from '../../components/Modal/Modal';
 import EditInfoModal from '../../components/EditInfoModal/EditInfoModal';
+import AboutModal from '../../components/AboutModal/AboutModal';
+import ExpModal from '../../components/ExpModal/ExpModal';
+import MessageModal from '../../components/MessageModal/MessageModal';
+import { ArrowRightAlt } from '@mui/icons-material';
 
 const Profile = () => {
 
@@ -14,20 +18,35 @@ const Profile = () => {
   const [circularImage, setCircularImage] = useState(true);
 
   const [infoModal, setInfoModal] = useState(false);
+  const [aboutModal, setAboutModal] = useState(false);
+  const [expModal, setExpModal] = useState(false);
+  const [messageModal, setMessageModal] = useState(false);
 
-  const handleInfoModal = ()=>{
-    setInfoModal(prev=>!prev)
+  const handleMessageModal = () => {
+    setMessageModal(prev => !prev)
+  }
+
+  const handleExpModal = () => {
+    setExpModal(prev => !prev)
+  }
+
+  const handleAboutModal = () => {
+    setAboutModal(prev => !prev)
+  }
+
+  const handleInfoModal = () => {
+    setInfoModal(prev => !prev)
   }
 
   const handleImageModalOpenClose = () => {
     setImageModal(prev => !prev)
   }
 
-  const handleOnEditCover = ()=>{
+  const handleOnEditCover = () => {
     setImageModal(true);
     setCircularImage(false);
   }
-  const handleCircularImageOpen = ()=>{
+  const handleCircularImageOpen = () => {
     setImageModal(true);
     setCircularImage(true);
   }
@@ -67,7 +86,7 @@ const Profile = () => {
                         <div className='cursor-pointer p-2 border rounded-lg bg-blue-800 text-white font-semibold'>Logout</div>
                       </div>
                       <div className='my-5 flex gap-5'>
-                        <div className='cursor-pointer p-2 border rounded-lg bg-blue-800 text-white font-semibold'>Message</div>
+                        <div onClick={handleMessageModal} className='cursor-pointer p-2 border rounded-lg bg-blue-800 text-white font-semibold'>Message</div>
                         <div className='cursor-pointer p-2 border rounded-lg bg-blue-800 text-white font-semibold'>Connect</div>
                       </div>
                     </div>
@@ -83,7 +102,7 @@ const Profile = () => {
             <Card padding={1}>
               <div className='flex justify-between items-center'>
                 <div className="text-xl">About</div>
-                <div className='cursor-pointer'><EditIcon /></div>
+                <div className='cursor-pointer' onClick={handleAboutModal}><EditIcon /></div>
               </div>
               <div className='text-gray-700 text-md w-[80%] '>Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti placeat neque vero cumque, rem provident voluptatibus maxime quo. Dolorum nesciunt maiores odio quos asperiores dolores ab ut? Commodi inventore voluptatibus alias autem molestias quia praesentium.</div>
             </Card>
@@ -126,6 +145,10 @@ const Profile = () => {
                 </div>
 
               </div>
+
+              <div className="w-full flex justify-center items-center">
+                <div className="p-2 rounded-xl cursor-pointer hover:bg-gray-300">Show All Posts <ArrowRightAlt /></div>
+              </div>
             </Card>
           </div>
 
@@ -133,7 +156,7 @@ const Profile = () => {
             <Card padding={1}>
               <div className='flex justify-between items-center'>
                 <div className="text-xl">Experience</div>
-                <div className="cursor-pointer"><AddIcon /></div>
+                <div onClick={handleExpModal} className="cursor-pointer"><AddIcon /></div>
               </div>
 
               <div className="mt-5">
@@ -173,6 +196,24 @@ const Profile = () => {
       {
         infoModal && <Modal title='Edit Info' closeModal={handleInfoModal}>
           <EditInfoModal />
+        </Modal>
+      }
+
+      {
+        aboutModal && <Modal title="Edit About" closeModal={handleAboutModal} >
+          <AboutModal />
+        </Modal>
+      }
+
+      {
+        expModal && <Modal title="Add Experience" closeModal={handleExpModal} >
+          <ExpModal />
+        </Modal>
+      }
+
+      {
+        messageModal && <Modal title="Send Message" closeModal={handleMessageModal} >
+          <MessageModal />
         </Modal>
       }
 

@@ -22,7 +22,7 @@ function App() {
   return (
     <>
       <div className='bg-gray-100 w-full h-full box-border'>
-        {isLogin? <Navbar2/> : <Navbar1/>}
+        {isLogin ? <Navbar2 /> : <Navbar1 />}
         <Routes>
           <Route path='/' element={<LandingPage />} />
           <Route path='/signup' element={<SignUp />} />
