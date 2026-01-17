@@ -56,10 +56,10 @@ const Navbar2 = () => {
           <div className={`text-sm text-gray-500 ${location.pathname==='/notification'?"border-b-3": ""}`}>Notification</div>
         </Link>
 
-        <div className='flex flex-col items-center cursor-pointer'>
+        <Link to={`/profile/asdfg`} className='flex flex-col items-center cursor-pointer'>
           <img className='w-6 h-6 rounded-full' src='http://res.cloudinary.com/dbraoytbj/image/upload/v1747213557/xwyq1qwjpsythq3dmroo.png' />
           <div className='text-sm text-gray-500'>Me</div>
-        </div>
+        </Link>
 
       </div>
     </div> 

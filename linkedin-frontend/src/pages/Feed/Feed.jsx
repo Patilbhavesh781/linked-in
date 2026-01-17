@@ -30,11 +30,11 @@ const Feed = () => {
           <Card padding={1}>
             <div className='w-full flex justify-between'>
               <div>Profile Viewers</div>
-              <div className='text-blue-900'>23</div>
+              <div className='text-blue-900 hover:underline cursor-pointer'>23</div>
             </div>
             <div className='w-full flex justify-between'>
               <div>Post Impressions</div>
-              <div className='text-blue-900'>90</div>
+              <div className='text-blue-900 hover:underline cursor-pointer'>90</div>
             </div>
           </Card>
         </div>

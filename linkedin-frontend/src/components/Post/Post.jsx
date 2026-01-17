@@ -6,7 +6,7 @@ import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import CommentIcon from '@mui/icons-material/Comment';
 import SendIcon from '@mui/icons-material/Send';
 
-const Post = () => {
+const Post = ({ profile }) => {
 
     const [seeMore, setSeeMore] = useState(false);
 
@@ -48,27 +48,30 @@ const Post = () => {
                 </div>
             </div>
 
-            <div className='flex p-1'>
-                <div className='w-[33%] justify-center flex gap-2 items-center border-r border-gray-100 p-2 cursor-pointer hover:bg-gray-100'><ThumbUpIcon sx={{ fontSize: 22, color: "blue" }} /> <span>Like</span></div>
-                <div onClick={()=>setComment(true)} className='w-[33%] justify-center flex gap-2 items-center border-r border-gray-100 p-2 cursor-pointer hover:bg-gray-100'><CommentIcon sx={{ fontSize: 22 }} /> <span>Comment</span></div>
-                <div className='w-[33%] justify-center flex gap-2 items-center border-r border-gray-100 p-2 cursor-pointer hover:bg-gray-100'><SendIcon sx={{ fontSize: 22 }} /> <span>Share</span></div>
-            </div>
+            {
+                !profile && <div className='flex p-1'>
+                    <div className='w-[33%] justify-center flex gap-2 items-center border-r border-gray-100 p-2 cursor-pointer hover:bg-gray-100'><ThumbUpIcon sx={{ fontSize: 22, color: "blue" }} /> <span>Like</span></div>
+                    <div onClick={() => setComment(true)} className='w-[33%] justify-center flex gap-2 items-center border-r border-gray-100 p-2 cursor-pointer hover:bg-gray-100'><CommentIcon sx={{ fontSize: 22 }} /> <span>Comment</span></div>
+                    <div className='w-[33%] justify-center flex gap-2 items-center border-r border-gray-100 p-2 cursor-pointer hover:bg-gray-100'><SendIcon sx={{ fontSize: 22 }} /> <span>Share</span></div>
+                </div>
+            }
 
             {/* Comment Section */}
-            <div className='p-4 w-full'>
-                <div className='flex gap-2 items-center'>
-                    <img className='rounded-4xl w-12 h-12 border-2 border-white cursor-pointer' src="http://res.cloudinary.com/dbraoytbj/image/upload/v1747213557/xwyq1qwjpsythq3dmroo.png" alt="" />
+            {
+                comment && <div className='p-4 w-full'>
+                    <div className='flex gap-2 items-center'>
+                        <img className='rounded-4xl w-12 h-12 border-2 border-white cursor-pointer' src="http://res.cloudinary.com/dbraoytbj/image/upload/v1747213557/xwyq1qwjpsythq3dmroo.png" alt="" />
 
-                    <form className='w-full flex gap-2' action="" onSubmit={handleSendComment}>
-                        <input type="text" placeholder='Add a comment...' className='w-full border py-3 px-5 rounded-3xl hover:bg-gray-100' />
-                        <button type='submit' className='cursor-pointer bg-blue-800 text-white rounded-3xl py-1 px-3'>Send</button>
-                    </form>
+                        <form className='w-full flex gap-2' action="" onSubmit={handleSendComment}>
+                            <input type="text" placeholder='Add a comment...' className='w-full border py-3 px-5 rounded-3xl hover:bg-gray-100' />
+                            <button type='submit' className='cursor-pointer bg-blue-800 text-white rounded-3xl py-1 px-3'>Send</button>
+                        </form>
 
-                </div>
+                    </div>
 
-                {/* other's Comment Section */}
-                {
-                    comment && <div className='w-full p-4'>
+                    {/* other's Comment Section */}
+
+                    <div className='w-full p-4'>
                         <div className='my-4'>
 
                             <div className='flex gap-3'>
@@ -87,8 +90,8 @@ const Post = () => {
                         </div>
                     </div>
 
-                }
-            </div>
+                </div>
+            }
         </Card>
     )
 }
