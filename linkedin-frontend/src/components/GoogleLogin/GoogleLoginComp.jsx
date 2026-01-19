@@ -3,7 +3,7 @@ import { GoogleLogin } from '@react-oauth/google';
 
 const GoogleLoginComp = () => {
 
-  const handleOnSuccess = (credResponse)=>{
+  const handleOnSuccess = (credResponse) => {
     console.log(credResponse)
   }
 

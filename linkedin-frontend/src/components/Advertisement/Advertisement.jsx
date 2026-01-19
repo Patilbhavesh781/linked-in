@@ -15,9 +15,9 @@ const Advertisement = () => {
         </div>
 
         <div className='px-5 my-5 mx-auto'>
-            <div className='text-sm font-semibold text-center'>Danish</div>
-            <div className='text-sm my-3 text-center'>Get the latest jobs and industry news</div>
-            <div className='text-sm my-1 border text-center p-2 rounded-2xl font-bold border-blue-950 text-white bg-blue-800 cursor-pointer'>Explore</div>
+          <div className='text-sm font-semibold text-center'>Danish</div>
+          <div className='text-sm my-3 text-center'>Get the latest jobs and industry news</div>
+          <div className='text-sm my-1 border text-center p-2 rounded-2xl font-bold border-blue-950 text-white bg-blue-800 cursor-pointer'>Explore</div>
 
         </div>
       </Card>

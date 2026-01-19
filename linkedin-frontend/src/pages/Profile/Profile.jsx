@@ -11,8 +11,10 @@ import AboutModal from '../../components/AboutModal/AboutModal';
 import ExpModal from '../../components/ExpModal/ExpModal';
 import MessageModal from '../../components/MessageModal/MessageModal';
 import { ArrowRightAlt } from '@mui/icons-material';
+import { Link, useParams } from 'react-router-dom';
 
 const Profile = () => {
+  const { id } = useParams();
 
   const [imageSetModal, setImageModal] = useState(false);
   const [circularImage, setCircularImage] = useState(true);
@@ -134,20 +136,23 @@ const Profile = () => {
               {/* Parent div for scrollable activities */}
               <div className="overflow-x-auto my-2 flex gap-1 overflow-y-hidden w-full">
 
-                <div className="cursor-pointer shrink-0 w-[350px]">
+                <Link to={`/profile/${id}/activity/112`} className="cursor-pointer shrink-0 w-[350px] h-[560px]">
                   <Post profile={1} />
-                </div>
-                <div className="cursor-pointer shrink-0 w-[350px]">
+                </Link>
+
+                <Link to={`/profile/${id}/activity/112`} className="cursor-pointer shrink-0 w-[350px] h-[560px]">
                   <Post profile={1} />
-                </div>
-                <div className="cursor-pointer shrink-0 w-[350px]">
+                </Link>
+
+                <Link to={`/profile/${id}/activity/112`} className="cursor-pointer shrink-0 w-[350px] h-[560px]">
                   <Post profile={1} />
-                </div>
+                </Link>
+
 
               </div>
 
               <div className="w-full flex justify-center items-center">
-                <div className="p-2 rounded-xl cursor-pointer hover:bg-gray-300">Show All Posts <ArrowRightAlt /></div>
+                <Link to={`/profile/${id}/activity`} className="p-2 rounded-xl cursor-pointer hover:bg-gray-300">Show All Posts <ArrowRightAlt /></Link>
               </div>
             </Card>
           </div>

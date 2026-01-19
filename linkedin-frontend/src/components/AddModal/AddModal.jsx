@@ -21,14 +21,14 @@ const AddModal = () => {
 
             <div className='flex justify-between items-center'>
                 <div className='my-5'>
-                    <label className='cursor-pointer' htmlFor="inputFile"><ImageIcon/></label>
+                    <label className='cursor-pointer' htmlFor="inputFile"><ImageIcon /></label>
                     <input type="file" className='hidden' name="" id="inputFile" />
                 </div>
 
                 <div className='bg-blue-950 text-white py-1 px-3 cursor-pointer rounded-2xl h-fit'>Post</div>
 
             </div>
-            
+
         </div>
     )
 }

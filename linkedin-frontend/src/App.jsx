@@ -13,6 +13,9 @@ import MyNetwork from './pages/MyNetwork/MyNetwork'
 import Resume from './pages/Resume/Resume'
 import Messages from './components/Messages/Messages'
 import Profile from './pages/Profile/Profile'
+import AllActivity from './pages/AllActivity/AllActivity'
+import SingleActivity from './pages/SingleActivity/SingleActivity'
+import Notification from './pages/Notification/Notification'
 
 
 function App() {
@@ -31,7 +34,10 @@ function App() {
           <Route path='/mynetwork' element={<MyNetwork />} />
           <Route path='/resume' element={<Resume />} />
           <Route path='/messages' element={<Messages />} />
+          <Route path='/notification' element={<Notification />} />
           <Route path='/profile/:id' element={<Profile />} />
+          <Route path='/profile/:id/activity' element={<AllActivity />} />
+          <Route path='/profile/:id/activity/:postId' element={<SingleActivity />} />
         </Routes>
         <Footer />
       </div>

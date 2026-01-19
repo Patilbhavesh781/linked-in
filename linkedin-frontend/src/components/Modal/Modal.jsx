@@ -10,12 +10,12 @@ const Modal = (props) => {
 
                         <div className='text-2xl'>{props.title}</div>
                     </div>
-                    <div onClick={()=>props.closeModal()} className='cursor-pointer'><CloseIcon /></div>
+                    <div onClick={() => props.closeModal()} className='cursor-pointer'><CloseIcon /></div>
                 </div>
                 {props.children}
             </div>
 
-            
+
 
         </div>
     )
