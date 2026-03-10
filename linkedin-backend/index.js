@@ -12,10 +12,12 @@ app.use(cookieParser());
 const UserRoutes = require('./routes/user');
 const PostRoutes = require('./routes/post');
 const NotificationRoutes = require('./routes/notification');
+const CommentRoutes = require('./routes/comment');
 
 app.use('/api/auth', UserRoutes);
 app.use('/api/post', PostRoutes);
 app.use('/api/notification', NotificationRoutes);
+app.use('/api/comment', CommentRoutes);
 
 app.listen(PORT, (req,res)=>{
     console.log(`server is running on port ${PORT}`)
