@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Card from '../../components/Card/Card'
 import ProfileCard from '../../components/ProfileCard/ProfileCard'
 import VideoCameraBackIcon from '@mui/icons-material/VideoCameraBack';
@@ -10,10 +10,48 @@ import Post from '../../components/Post/Post';
 import Modal from '../../components/Modal/Modal';
 import AddModal from '../../components/AddModal/AddModal';
 import Loader from '../../components/Loader/Loader';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
 
 const Feed = () => {
 
-  const [addPostModal, setAddPostModal] = useState();
+  const [personalData, setPersonalData] = useState(null);
+
+  const [post, setPost] = useState([]);
+
+  const [addPostModal, setAddPostModal] = useState(false);
+
+  // const fetchSelfData = async()=>{
+  //   await axios.get('http://localhost:4000/api/auth/self', {withCredentials:true}).then(res=>{
+  //     setPersonalData(res.data.user);
+
+  //   }).catch(err=>{
+  //     console.error('API error: ', err);
+  //     toast.error(err?.response?.data?.error)
+  //   })
+  // }
+
+  const fetchData = async () => {
+    try {
+      const [userData, postData] = await Promise.all([
+        await axios.get('http://localhost:4000/api/auth/self', { withCredentials: true }),
+        await axios.get('http://localhost:4000/api/post/getAllPost')
+      ]);
+      setPersonalData(userData.data.user)
+      localStorage.setItem('userInfo', JSON.stringify(userData.data.user))
+      setPost(postData.data.posts)
+
+    } catch (err) {
+      console.log(err);
+      toast.error(err?.response?.data?.error)
+    }
+
+  }
+
+  useEffect(() => {
+    // fetchSelfData()
+    fetchData()
+  }, [])
 
   const handleOpenPostModel = () => {
     setAddPostModal(prev => !prev)
@@ -25,7 +63,7 @@ const Feed = () => {
       {/* Left Side */}
       <div className='w-[21%] sm:block sm:w-[23%] hidden py-5'>
         <div className='h-fit'>
-          <ProfileCard />
+          <ProfileCard data={personalData} />
         </div>
         <div className='w-full my-5'>
           <Card padding={1}>
@@ -44,11 +82,12 @@ const Feed = () => {
       {/* Middle Side */}
       <div className='w-full py-5 sm:w-[50%] '>
 
+        {/*Post Section*/}
         <div>
           <Card padding={1}>
             <div className='flex gap-2 items-center'>
 
-              <img src="http://res.cloudinary.com/dbraoytbj/image/upload/v1747213557/xwyq1qwjpsythq3dmroo.png" alt="" className='rounded-4xl w-13 h-13 border-2 border-white cursor-pointer' />
+              <img src={personalData?.profilePic} alt="" className='rounded-4xl w-13 h-13 border-2 border-white cursor-pointer' />
               <div onClick={() => setAddPostModal(true)} className='w-full border py-3 px-3 rounded-3xl cursor-pointer hover:bg-gray-100 '>Start a Post</div>
             </div>
 
@@ -73,7 +112,13 @@ const Feed = () => {
         <div className='border-b border-gray-400 w-full my-5' />
 
         <div className='w-full flex flex-col gap-5'>
-          <Post />
+          
+          {
+            post.map((item, index)=>{
+              return <Post item={item} key={index} personalData={personalData} />;
+            })
+          }
+
         </div>
 
       </div>
@@ -103,9 +148,10 @@ const Feed = () => {
 
       {
         addPostModal && <Modal closeModal={handleOpenPostModel} title={"Add a Post"} >
-          <AddModal />
+          <AddModal personalData={personalData} />
         </Modal>
       }
+      <ToastContainer />
 
 
     </div>

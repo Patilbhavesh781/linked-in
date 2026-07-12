@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Advertisement from '../../components/Advertisement/Advertisement'
 import Card from '../../components/Card/Card'
 import Post from '../../components/Post/Post'
@@ -12,6 +12,7 @@ import ExpModal from '../../components/ExpModal/ExpModal';
 import MessageModal from '../../components/MessageModal/MessageModal';
 import { ArrowRightAlt } from '@mui/icons-material';
 import { Link, useParams } from 'react-router-dom';
+import axios from 'axios';
 
 const Profile = () => {
   const { id } = useParams();
@@ -23,6 +24,32 @@ const Profile = () => {
   const [aboutModal, setAboutModal] = useState(false);
   const [expModal, setExpModal] = useState(false);
   const [messageModal, setMessageModal] = useState(false);
+
+  const [userData, setUserData] = useState(null);
+  const [postData, setPostData] = useState([]);
+  const [ownData, setOwnData] = useState(null);
+
+  const fetchDataOnLoad = async () => {
+    try {
+      const [userDatas, postDatas, ownDatas] = await Promise.all([
+        axios.get(`http://localhost:4000/api/auth/user/${id}`),
+        axios.get(`http://localhost:4000/api/post/getTop5Post/${id}`),
+        axios.get('http://localhost:4000/api/auth/self', { withCredentials: true })
+      ]);
+
+      setUserData(userDatas.data.user);
+      setPostData(postDatas.data.posts);
+      setOwnData(ownDatas.data.user);
+
+    } catch (err) {
+      console.log(err);
+      alert("Something Went Wrong");
+    }
+  }
+
+  useEffect(() => {
+    fetchDataOnLoad()
+  }, [])
 
   const handleMessageModal = () => {
     setMessageModal(prev => !prev)
@@ -66,9 +93,9 @@ const Profile = () => {
 
                   <div className='absolute cursor-pointer top-3 right-3 z-20 w-[35px] flex justify-center items-center h-[35px] rounded-full p-3 bg-white' onClick={handleOnEditCover} ><EditIcon /></div>
 
-                  <img className='w-full h-[200px] rounded-tr-lg rounded-tl-lg' src="https://www.goodfreephotos.com/albums/bolivia/other-bolivia/mountains-and-lake-landscape-scenic.jpg" alt="" />
+                  <img className='w-full h-[200px] rounded-tr-lg rounded-tl-lg' src={userData?.cover_pic} alt="" />
                   <div onClick={handleCircularImageOpen} className='absolute object-cover top-24 left-6 z-10'>
-                    <img className='rounded-full border-2 border-white cursor-pointer w-35 h-35' src="http://res.cloudinary.com/dbraoytbj/image/upload/v1747213557/xwyq1qwjpsythq3dmroo.png" alt="" /> </div>
+                    <img className='rounded-full border-2 border-white cursor-pointer w-35 h-35' src={userData?.profilePic} alt="" /> </div>
                 </div>
 
                 <div className='mt-10 relative px-8 py-2'>
@@ -76,10 +103,10 @@ const Profile = () => {
                   <div onClick={handleInfoModal} className='absolute cursor-pointer top-3 right-3 z-20 w-[35px] flex justify-center items-center h-[35px] rounded-full p-3 bg-white'><EditIcon /></div>
 
                   <div className='w-full'>
-                    <div className='text-2xl'>User 1</div>
-                    <div className='text-gray-700'>I am a software Engineer </div>
-                    <div className='text-sm text-gray-500'>Delhi,India</div>
-                    <div className='text-md text-blue-800 w-fit cursor-pointer hover:underline'>2 Connections</div>
+                    <div className='text-2xl'>{userData?.f_name}</div>
+                    <div className='text-gray-700'>{userData?.headline}</div>
+                    <div className='text-sm text-gray-500'>{userData?.curr_location}</div>
+                    <div className='text-md text-blue-800 w-fit cursor-pointer hover:underline'>{userData?.friends?.length} Connections</div>
 
                     <div className='md:flex w-full justify-between'>
                       <div className='my-5 flex gap-5'>
@@ -106,7 +133,7 @@ const Profile = () => {
                 <div className="text-xl">About</div>
                 <div className='cursor-pointer' onClick={handleAboutModal}><EditIcon /></div>
               </div>
-              <div className='text-gray-700 text-md w-[80%] '>Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti placeat neque vero cumque, rem provident voluptatibus maxime quo. Dolorum nesciunt maiores odio quos asperiores dolores ab ut? Commodi inventore voluptatibus alias autem molestias quia praesentium.</div>
+              <div className='text-gray-700 text-md w-[80%] '>{userData?.about}</div>
             </Card>
           </div>
 
@@ -117,11 +144,14 @@ const Profile = () => {
               </div>
               <div className='text-gray-700 text-md my-2 w-full flex gap-4 flex-wrap'>
 
-                <div className="py-2 px-3 cursor-pointer bg-blue-800 text-white rounded-lg">React JS</div>
-                <div className="py-2 px-3 cursor-pointer bg-blue-800 text-white rounded-lg">HTML5</div>
-                <div className="py-2 px-3 cursor-pointer bg-blue-800 text-white rounded-lg">CSS3</div>
-                <div className="py-2 px-3 cursor-pointer bg-blue-800 text-white rounded-lg">Node JS</div>
-                <div className="py-2 px-3 cursor-pointer bg-blue-800 text-white rounded-lg">MongoDB</div>
+                {
+                  userData?.skills?.map((item, index) => {
+                    return (
+                      <div key={index} className="py-2 px-3 cursor-pointer bg-blue-800 text-white rounded-lg">{item}</div>
+                    );
+                  })
+                }
+
               </div>
             </Card>
           </div>
@@ -136,17 +166,15 @@ const Profile = () => {
               {/* Parent div for scrollable activities */}
               <div className="overflow-x-auto my-2 flex gap-1 overflow-y-hidden w-full">
 
-                <Link to={`/profile/${id}/activity/112`} className="cursor-pointer shrink-0 w-[350px] h-[560px]">
-                  <Post profile={1} />
-                </Link>
-
-                <Link to={`/profile/${id}/activity/112`} className="cursor-pointer shrink-0 w-[350px] h-[560px]">
-                  <Post profile={1} />
-                </Link>
-
-                <Link to={`/profile/${id}/activity/112`} className="cursor-pointer shrink-0 w-[350px] h-[560px]">
-                  <Post profile={1} />
-                </Link>
+                {
+                  postData.map((item, ind) => {
+                    return (
+                      <Link to={`/profile/${id}/activity/${item?._id}`} className="cursor-pointer shrink-0 w-[350px] h-[560px]">
+                        <Post profile={1} item={item} personalData={ownData} />
+                      </Link>
+                    );
+                  })
+                }
 
 
               </div>
@@ -165,15 +193,21 @@ const Profile = () => {
               </div>
 
               <div className="mt-5">
-                <div className="p-2 border-t border-gray-300 flex justify-between">
+                {
+                  userData?.experience?.map((item, index)=>{
+                    return (
+                      <div className="p-2 border-t border-gray-300 flex justify-between">
                   <div>
-                    <div className="text-lg">DSE Engineer | Full Stack Engineer</div>
-                    <div className="text-sm">Amazon</div>
-                    <div className="text-sm text-gray-500">March 2024, Present</div>
-                    <div className="text-sm text-gray-500">Delhi, India</div>
+                    <div className="text-lg">{item?.designation}</div>
+                    <div className="text-sm">{item?.company_name}</div>
+                    <div className="text-sm text-gray-500">{item?.duration}</div>
+                    <div className="text-sm text-gray-500">{item?.location}</div>
                   </div>
                   <div className="cursor-pointer"><EditIcon /></div>
                 </div>
+                    );
+                  })
+                }
               </div>
 
             </Card>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './navbar2.css'
 import HomeIcon from '@mui/icons-material/Home';
 import GroupIcon from '@mui/icons-material/Group';
@@ -11,6 +11,14 @@ const Navbar2 = () => {
 
   const [dropdown, setDropDown] = useState(false)
   const location = useLocation()
+
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    let userData = localStorage.getItem('userInfo')
+    setUserData(userData ? JSON.parse(userData) : null)
+  }, [])
+
   return (
     <div className='bg-white h-13 flex justify-between py-1 px-5 xl:px-50 fixed top-0 w-full z-1000'>
       <div className='flex gap-2 items-center'>
@@ -56,8 +64,8 @@ const Navbar2 = () => {
           <div className={`text-sm text-gray-500 ${location.pathname === '/notification' ? "border-b-3" : ""}`}>Notification</div>
         </Link>
 
-        <Link to={`/profile/asdfg`} className='flex flex-col items-center cursor-pointer'>
-          <img className='w-6 h-6 rounded-full' src='http://res.cloudinary.com/dbraoytbj/image/upload/v1747213557/xwyq1qwjpsythq3dmroo.png' />
+        <Link to={`/profile/${userData?._id}`} className='flex flex-col items-center cursor-pointer'>
+          <img className='w-6 h-6 rounded-full' src={userData?.profilePic} />
           <div className='text-sm text-gray-500'>Me</div>
         </Link>
 

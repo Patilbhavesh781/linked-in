@@ -54,19 +54,19 @@ function App() {
           
           <Route path='/feed' element={isLogin?<Feed />:<Navigate to={'/login'} />} />
           
-          <Route path='/mynetwork' element={<MyNetwork />} />
+          <Route path='/mynetwork' element={isLogin?<MyNetwork />:<Navigate to={'/login'} />} />
           
-          <Route path='/resume' element={<Resume />} />
+          <Route path='/resume' element={isLogin?<Resume />:<Navigate to={'/login'} />} />
           
-          <Route path='/messages' element={<Messages />} />
+          <Route path='/messages' element={isLogin?<Messages />:<Navigate to={'/login'} />} />
           
-          <Route path='/notification' element={<Notification />} />
+          <Route path='/notification' element={isLogin?<Notification />:<Navigate to={'/login'} />} />
           
-          <Route path='/profile/:id' element={<Profile />} />
+          <Route path='/profile/:id' element={isLogin?<Profile />:<Navigate to={'/login'} />} />
           
-          <Route path='/profile/:id/activity' element={<AllActivity />} />
+          <Route path='/profile/:id/activity' element={isLogin?<AllActivity />:<Navigate to={'/login'} />} />
           
-          <Route path='/profile/:id/activity/:postId' element={<SingleActivity />} />
+          <Route path='/profile/:id/activity/:postId' element={isLogin?<SingleActivity />:<Navigate to={'/login'} />} />
         </Routes>
         <Footer />
       </div>

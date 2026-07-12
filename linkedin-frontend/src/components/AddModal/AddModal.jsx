@@ -1,33 +1,74 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ImageIcon from '@mui/icons-material/Image';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
 
-const AddModal = () => {
+const AddModal = (props) => {
+
+    const [imageUrl, setImageUrl] = useState(null);
+    const [desc, setDesc] = useState("");
+
+    // cloudname = drf2rliqg;
+    // presetname = linkedinClone;
+
+
+    const handlePost = async () => {
+        if (desc.trim().length === 0 & !imageUrl) return toast.error("Please enter any field");
+
+        await axios.post('http://localhost:4000/api/post', {desc:desc, imageLink:imageUrl}, {withCredentials:true}).then((res=>{
+            window.location.reload();
+        })).catch(err=>{
+            console.log(err);
+
+        })
+    }
+
+    const handleUploadImage = async (e) => {
+        const files = e.target.files;
+        const data = new FormData();
+        data.append('file', files[0]);
+
+        data.append('upload_preset', 'linkedinClone');
+
+        try {
+            const response = await axios.post("https://api.cloudinary.com/v1_1/drf2rliqg/image/upload", data)
+            const imageUrl = response.data.url;
+            setImageUrl(imageUrl)
+
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     return (
         <div className=''>
             <div className='flex gap-4 items-center'>
                 <div className='relative'>
-                    <img className='rounded-full w-15 h-15' src={"http://res.cloudinary.com/dbraoytbj/image/upload/v1747213557/xwyq1qwjpsythq3dmroo.png"} alt="img" />
+                    <img className='rounded-full w-15 h-15' src={props?.personalData?.profilePic} alt="img" />
                 </div>
-                <div className='text-2xl'>Mashhood Ahmed</div>
+                <div className='text-2xl'>{props?.personalData?.f_name}</div>
             </div>
 
             <div>
-                <textarea cols={50} rows={5} placeholder='What do you want to talk about?' className='my-3 outline-0 text-xl p-2' name="" id=""></textarea>
+                <textarea value={desc} onChange={(e) => setDesc(e.target.value)} cols={50} rows={5} placeholder='What do you want to talk about?' className='my-3 outline-0 text-xl p-2' name="" id=""></textarea>
             </div>
 
-            <div>
-                <img className='w-20 h-20 rounded-xl' src="https://www.goodfreephotos.com/albums/bolivia/other-bolivia/mountains-and-lake-landscape-scenic.jpg" alt="" />
-            </div>
+            {
+                imageUrl && <div>
+                    <img className='w-20 h-20 rounded-xl' src={imageUrl} alt="" />
+                </div>
+            }
 
             <div className='flex justify-between items-center'>
                 <div className='my-5'>
                     <label className='cursor-pointer' htmlFor="inputFile"><ImageIcon /></label>
-                    <input type="file" className='hidden' name="" id="inputFile" />
+                    <input onChange={handleUploadImage} type="file" className='hidden' name="" id="inputFile" />
                 </div>
 
-                <div className='bg-blue-950 text-white py-1 px-3 cursor-pointer rounded-2xl h-fit'>Post</div>
+                <div className='bg-blue-950 text-white py-1 px-3 cursor-pointer rounded-2xl h-fit' onClick={handlePost}>Post</div>
 
             </div>
+            <ToastContainer />
 
         </div>
     )
