@@ -6,10 +6,10 @@ const Advertisement = () => {
 
   const [userData, setUserData] = useState(null);
 
-  useEffect(()=>{
+  useEffect(() => {
     let userData = localStorage.getItem('userInfo')
-    setUserData(userData? JSON.parse(userData): null)
-  },[])
+    setUserData(userData ? JSON.parse(userData) : null)
+  }, [])
 
   return (
     <div className='sticky top-18'>

@@ -7,6 +7,7 @@ import CommentIcon from '@mui/icons-material/Comment';
 import SendIcon from '@mui/icons-material/Send';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 const Post = ({ profile, item, key, personalData }) => {
 
@@ -75,9 +76,9 @@ const Post = ({ profile, item, key, personalData }) => {
     return (
         <Card padding={0} >
             <div className='flex gap-3 p-4'>
-                <div className='w-12 h-12 rounded-4xl'>
+                <Link to={`/profile/${item?.user?._id}`} className='w-12 h-12 rounded-4xl'>
                     <img className='rounded-4xl w-12 h-12 border-2 border-white cursor-pointer' src={item?.user?.profilePic} alt="" />
-                </div>
+                </Link>
 
                 <div>
                     <div className='text-lg font-semibold'>{item?.user?.f_name}</div>

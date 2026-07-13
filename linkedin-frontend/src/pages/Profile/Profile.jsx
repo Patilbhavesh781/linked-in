@@ -24,11 +24,20 @@ const Profile = () => {
   const [aboutModal, setAboutModal] = useState(false);
   const [expModal, setExpModal] = useState(false);
   const [messageModal, setMessageModal] = useState(false);
-
+  
   const [userData, setUserData] = useState(null);
   const [postData, setPostData] = useState([]);
   const [ownData, setOwnData] = useState(null);
+  
+  const [updateExp, setUpdateExp] = useState({clicked:"", id:"", datas:{}});
 
+  const updateExpEdit = (id,data)=>{
+    setUpdateExp({...updateExp,
+      clicked:true, id:id, data:data
+    })
+    setExpModal(prev=>!prev)
+  }
+  
   const fetchDataOnLoad = async () => {
     try {
       const [userDatas, postDatas, ownDatas] = await Promise.all([
@@ -40,6 +49,8 @@ const Profile = () => {
       setUserData(userDatas.data.user);
       setPostData(postDatas.data.posts);
       setOwnData(ownDatas.data.user);
+
+      localStorage.setItem('userInfo', JSON.stringify(ownDatas.data.user));
 
     } catch (err) {
       console.log(err);
@@ -56,6 +67,9 @@ const Profile = () => {
   }
 
   const handleExpModal = () => {
+    if(expModal){
+      setUpdateExp({clicked:"", id:"", datas:{}});
+    }
     setExpModal(prev => !prev)
   }
 
@@ -79,6 +93,16 @@ const Profile = () => {
     setImageModal(true);
     setCircularImage(true);
   }
+
+  const handleEditFunc = async (data) => {
+    await axios.put(`http://localhost:4000/api/auth/update`, { user: data }, { withCredentials: true }).then(res => {
+      window.location.reload();
+    }).catch(err => {
+      console.log(err);
+      alert("Something Went Wrong!");
+    })
+  }
+
 
   return (
     <div className='px-5 xl:px-50 py-5 mt-5 flex flex-col gap-5 w-full pt-12 bg-gray-100'>
@@ -194,17 +218,17 @@ const Profile = () => {
 
               <div className="mt-5">
                 {
-                  userData?.experience?.map((item, index)=>{
+                  userData?.experience?.map((item, index) => {
                     return (
                       <div className="p-2 border-t border-gray-300 flex justify-between">
-                  <div>
-                    <div className="text-lg">{item?.designation}</div>
-                    <div className="text-sm">{item?.company_name}</div>
-                    <div className="text-sm text-gray-500">{item?.duration}</div>
-                    <div className="text-sm text-gray-500">{item?.location}</div>
-                  </div>
-                  <div className="cursor-pointer"><EditIcon /></div>
-                </div>
+                        <div>
+                          <div className="text-lg">{item?.designation}</div>
+                          <div className="text-sm">{item?.company_name}</div>
+                          <div className="text-sm text-gray-500">{item?.duration}</div>
+                          <div className="text-sm text-gray-500">{item?.location}</div>
+                        </div>
+                        <div onClick={()=>{updateExpEdit(item?._id, item)}} className="cursor-pointer"><EditIcon /></div>
+                      </div>
                     );
                   })
                 }
@@ -228,25 +252,25 @@ const Profile = () => {
 
       {
         imageSetModal && <Modal title='Upload Image' closeModal={handleImageModalOpenClose}  >
-          <ImageModal isCircular={circularImage} />
+          <ImageModal handleEditFunc={handleEditFunc} selfData={ownData} isCircular={circularImage} />
         </Modal>
       }
 
       {
         infoModal && <Modal title='Edit Info' closeModal={handleInfoModal}>
-          <EditInfoModal />
+          <EditInfoModal handleEditFunc={handleEditFunc} selfData={ownData} />
         </Modal>
       }
 
       {
         aboutModal && <Modal title="Edit About" closeModal={handleAboutModal} >
-          <AboutModal />
+          <AboutModal handleEditFunc={handleEditFunc} selfData={ownData} />
         </Modal>
       }
 
       {
         expModal && <Modal title="Add Experience" closeModal={handleExpModal} >
-          <ExpModal />
+          <ExpModal handleEditFunc={handleEditFunc} selfData={ownData} updateExp={updateExp} setUpdateExp={updateExpEdit} />
         </Modal>
       }
 
