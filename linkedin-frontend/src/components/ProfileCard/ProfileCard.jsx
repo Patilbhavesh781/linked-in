@@ -1,18 +1,19 @@
 import React from 'react'
 import Card from '../Card/Card'
+import { Link } from 'react-router-dom'
 
 const ProfileCard = (props) => {
 
   return (
     <Card padding={0} >
-      <div className='relative h-25'>
+      <Link to={`/profile/${props.data?._id}`} className='relative h-25'>
         <div className='relative w-full h-22 rounded-md'>
           <img src={props.data?.cover_pic} alt="" className='rounded-t-md w-full h-full' />
         </div>
         <div className='absolute top-14 left-6 z-10'>
           <img src={props?.data?.profilePic} alt="" className='rounded-4xl border-2 h-16 w-16 border-white cursor-pointer' />
         </div>
-      </div>
+      </Link>
 
 
       <div className='p-5'>

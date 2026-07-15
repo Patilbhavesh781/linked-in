@@ -13,6 +13,7 @@ import MessageModal from '../../components/MessageModal/MessageModal';
 import { ArrowRightAlt } from '@mui/icons-material';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
 
 const Profile = () => {
   const { id } = useParams();
@@ -24,20 +25,21 @@ const Profile = () => {
   const [aboutModal, setAboutModal] = useState(false);
   const [expModal, setExpModal] = useState(false);
   const [messageModal, setMessageModal] = useState(false);
-  
+
   const [userData, setUserData] = useState(null);
   const [postData, setPostData] = useState([]);
   const [ownData, setOwnData] = useState(null);
-  
-  const [updateExp, setUpdateExp] = useState({clicked:"", id:"", datas:{}});
 
-  const updateExpEdit = (id,data)=>{
-    setUpdateExp({...updateExp,
-      clicked:true, id:id, data:data
+  const [updateExp, setUpdateExp] = useState({ clicked: "", id: "", datas: {} });
+
+  const updateExpEdit = (id, data) => {
+    setUpdateExp({
+      ...updateExp,
+      clicked: true, id: id, data: data
     })
-    setExpModal(prev=>!prev)
+    setExpModal(prev => !prev)
   }
-  
+
   const fetchDataOnLoad = async () => {
     try {
       const [userDatas, postDatas, ownDatas] = await Promise.all([
@@ -60,15 +62,15 @@ const Profile = () => {
 
   useEffect(() => {
     fetchDataOnLoad()
-  }, [])
+  }, [id])
 
   const handleMessageModal = () => {
     setMessageModal(prev => !prev)
   }
 
   const handleExpModal = () => {
-    if(expModal){
-      setUpdateExp({clicked:"", id:"", datas:{}});
+    if (expModal) {
+      setUpdateExp({ clicked: "", id: "", datas: {} });
     }
     setExpModal(prev => !prev)
   }
@@ -103,6 +105,69 @@ const Profile = () => {
     })
   }
 
+  const amIfriend = () => {
+    let arr = userData?.friends?.filter((item) => { return item === ownData?._id })
+    return arr?.length;
+  }
+
+  const isInPendingList = () => {
+    let arr = userData?.pending_friends.filter((item) => { return item === ownData?._id })
+    return arr?.length;
+  }
+
+  const isInSelfPendingList = () => {
+    let arr = ownData?.pending_friends.filter((item) => { return item === userData?._id })
+    return arr?.length;
+  }
+
+  const checkFriendStatus = () => {
+    if (amIfriend()) {
+      return "Disconnect";
+    } else if (isInSelfPendingList()) {
+      return "Approve Request"
+    } else if (isInPendingList()) {
+      return "Request Sent"
+    } else {
+      return "Connect"
+    }
+  }
+
+  const handleSendFriendRequest = async () => {
+    if (checkFriendStatus() === "Request Sent") return;
+
+    if (checkFriendStatus() === "Connect") {
+      await axios.post('http://localhost:4000/api/auth/sendFriendReq', { receiver: userData?._id }, { withCredentials: true }).then(res => {
+        toast.success(res.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000)
+
+      }).catch(err => {
+        console.log(err);
+        toast.error(err?.response?.data?.error)
+      })
+    } else if (checkFriendStatus() === "Approve Request") {
+      await axios.post('http://localhost:4000/api/auth/acceptFriendRequest', { friendId: userData?._id }, { withCredentials: true }).then(res => {
+        toast.success(res.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }).catch(err => {
+        console.log(err);
+        toast.error(err?.response?.data?.error)
+      })
+    } else {
+      await axios.delete(`http://localhost:4000/api/auth/removeFromFriendList/${userData?._id}`, { withCredentials: true }).then(res => {
+        toast.success(res.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }).catch(err => {
+        console.log(err);
+        toast.error(err?.response?.data?.error)
+      })
+    }
+  }
 
   return (
     <div className='px-5 xl:px-50 py-5 mt-5 flex flex-col gap-5 w-full pt-12 bg-gray-100'>
@@ -115,7 +180,9 @@ const Profile = () => {
               <div className='w-full h-fit'>
                 <div className='relative w-full h-[200px]'>
 
-                  <div className='absolute cursor-pointer top-3 right-3 z-20 w-[35px] flex justify-center items-center h-[35px] rounded-full p-3 bg-white' onClick={handleOnEditCover} ><EditIcon /></div>
+                  {
+                    userData?._id === ownData?._id && <div className='absolute cursor-pointer top-3 right-3 z-20 w-[35px] flex justify-center items-center h-[35px] rounded-full p-3 bg-white' onClick={handleOnEditCover} ><EditIcon /></div>
+                  }
 
                   <img className='w-full h-[200px] rounded-tr-lg rounded-tl-lg' src={userData?.cover_pic} alt="" />
                   <div onClick={handleCircularImageOpen} className='absolute object-cover top-24 left-6 z-10'>
@@ -124,7 +191,9 @@ const Profile = () => {
 
                 <div className='mt-10 relative px-8 py-2'>
 
-                  <div onClick={handleInfoModal} className='absolute cursor-pointer top-3 right-3 z-20 w-[35px] flex justify-center items-center h-[35px] rounded-full p-3 bg-white'><EditIcon /></div>
+                  {
+                    userData?._id === ownData?._id && <div onClick={handleInfoModal} className='absolute cursor-pointer top-3 right-3 z-20 w-[35px] flex justify-center items-center h-[35px] rounded-full p-3 bg-white'><EditIcon /></div>
+                  }
 
                   <div className='w-full'>
                     <div className='text-2xl'>{userData?.f_name}</div>
@@ -136,12 +205,20 @@ const Profile = () => {
                       <div className='my-5 flex gap-5'>
                         <div className='cursor-pointer p-2 border rounded-lg bg-blue-800 text-white font-semibold'>Open to</div>
                         <div className='cursor-pointer p-2 border rounded-lg bg-blue-800 text-white font-semibold'>Share</div>
-                        <div className='cursor-pointer p-2 border rounded-lg bg-blue-800 text-white font-semibold'>Logout</div>
+                        {
+                          userData?._id === ownData?._id && <div className='cursor-pointer p-2 border rounded-lg bg-blue-800 text-white font-semibold'>Logout</div>
+                        }
                       </div>
-                      <div className='my-5 flex gap-5'>
-                        <div onClick={handleMessageModal} className='cursor-pointer p-2 border rounded-lg bg-blue-800 text-white font-semibold'>Message</div>
-                        <div className='cursor-pointer p-2 border rounded-lg bg-blue-800 text-white font-semibold'>Connect</div>
-                      </div>
+
+                      {
+                        userData?._id !== ownData?._id && <div className='my-5 flex gap-5'>
+                          {
+                            amIfriend() ? <div onClick={handleMessageModal} className='cursor-pointer p-2 border rounded-lg bg-blue-800 text-white font-semibold'>Message</div> : null
+                          }
+                          <div onClick={handleSendFriendRequest} className='cursor-pointer p-2 border rounded-lg bg-blue-800 text-white font-semibold'>{checkFriendStatus()}</div>
+                        </div>
+                      }
+
                     </div>
                   </div>
                 </div>
@@ -155,7 +232,9 @@ const Profile = () => {
             <Card padding={1}>
               <div className='flex justify-between items-center'>
                 <div className="text-xl">About</div>
-                <div className='cursor-pointer' onClick={handleAboutModal}><EditIcon /></div>
+                {
+                  userData?._id === ownData?._id && <div className='cursor-pointer' onClick={handleAboutModal}><EditIcon /></div>
+                }
               </div>
               <div className='text-gray-700 text-md w-[80%] '>{userData?.about}</div>
             </Card>
@@ -213,7 +292,9 @@ const Profile = () => {
             <Card padding={1}>
               <div className='flex justify-between items-center'>
                 <div className="text-xl">Experience</div>
-                <div onClick={handleExpModal} className="cursor-pointer"><AddIcon /></div>
+                {
+                  userData?._id === ownData?._id && <div onClick={handleExpModal} className="cursor-pointer"><AddIcon /></div>
+                }
               </div>
 
               <div className="mt-5">
@@ -227,7 +308,9 @@ const Profile = () => {
                           <div className="text-sm text-gray-500">{item?.duration}</div>
                           <div className="text-sm text-gray-500">{item?.location}</div>
                         </div>
-                        <div onClick={()=>{updateExpEdit(item?._id, item)}} className="cursor-pointer"><EditIcon /></div>
+                        {
+                          userData?._id === ownData?._id && <div onClick={() => { updateExpEdit(item?._id, item) }} className="cursor-pointer"><EditIcon /></div>
+                        }
                       </div>
                     );
                   })
@@ -279,6 +362,8 @@ const Profile = () => {
           <MessageModal />
         </Modal>
       }
+
+      < ToastContainer />
 
     </div>
   )

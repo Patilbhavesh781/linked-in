@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Advertisement from '../../components/Advertisement/Advertisement'
 import ProfileCard from '../../components/ProfileCard/ProfileCard'
 import { useParams } from 'react-router-dom'
@@ -8,13 +8,31 @@ import Post from '../../components/Post/Post'
 
 const AllActivity = () => {
     const { id } = useParams();
+
+    const [post, setPosts] = useState([]);
+    const [ownData, setOwnData] = useState(null);
+
+    const fetchDataOnLoad = async () => {
+        await axios.get(`http://localhost:4000/api/post/getAllPostForUser/${id}`).then(res => {
+            console.log(res);
+
+        }).catch(err => {
+            console.log(err);
+            toast.error(err?.response?.data?.error)
+        })
+    }
+
+    useEffect(() => {
+        fetchDataOnLoad()
+    }, [id])
+
     return (
         <div className='px-5 xl:px-50 py-9 flex gap-5 w-full mt-5 bg-gray-100'>
 
             {/* Left Side */}
             <div className='w-[21%] sm:block sm:w-[23%] hidden py-5'>
                 <div className='h-fit'>
-                    <ProfileCard />
+                    <ProfileCard data={post[0]?.user} />
                 </div>
 
             </div>
@@ -30,13 +48,13 @@ const AllActivity = () => {
 
                         <div className="my-2 flex flex-col gap-2">
 
-                            <div>
-                                <Post />
-                            </div>
-
-                            <div>
-                                <Post />
-                            </div>
+                            {
+                                post.map((item, index) => {
+                                    <div key={index}>
+                                        <Post />
+                                    </div>
+                                })
+                            }
 
                         </div>
                     </Card>

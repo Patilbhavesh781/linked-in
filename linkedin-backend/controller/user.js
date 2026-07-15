@@ -279,7 +279,7 @@ exports.removeFromFriend = async(req, res)=>{
 
         const friendData = await User.findById(friendId);
         if ( !friendData ) {
-            res.status(400).json({
+            return res.status(400).json({
                 error: "No such User Exist"
             });
         }
@@ -292,6 +292,10 @@ exports.removeFromFriend = async(req, res)=>{
             return res.status(400).json({
                 error: "No any request from such user"
             });
+        }
+
+        if ( friendIndex !== -1 ) {
+            friendData.friends.splice(friendIndex, 1);
         }
 
         await req.user.save();

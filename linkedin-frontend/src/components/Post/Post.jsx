@@ -136,7 +136,7 @@ const Post = ({ profile, item, key, personalData }) => {
                                 return (
                                     // Always add a unique key when mapping over arrays in React
                                     <div className='my-4' key={item?._id || index}>
-                                        <div className='flex gap-3'>
+                                        <Link to={`/profile/${item?.user?._id}`} className='flex gap-3'>
                                             <img className='rounded-4xl w-10 h-10 border-2 border-white cursor-pointer' src={item?.user?.profilePic} alt="" />
 
                                             <div className='cursor-pointer'>
@@ -144,7 +144,7 @@ const Post = ({ profile, item, key, personalData }) => {
                                                 <div className='text-md'>{item?.user?.f_name || "Anonymous"}</div>
                                                 <div className='text-sm text-gray-500'>{item?.user?.headline || ""}</div>
                                             </div>
-                                        </div>
+                                        </Link>
 
                                         <div className='px-11 my-2'>{item?.comment}</div>
                                     </div>
