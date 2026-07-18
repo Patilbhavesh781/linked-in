@@ -169,6 +169,26 @@ const Profile = () => {
     }
   }
 
+  const handleLogout = async () => {
+    await axios.post('http://localhost:4000/api/auth/logout', {}, { withCredentials: true }).then(res=>{
+      localStorage.clear();
+      window.location.reload();
+    }).catch(err => {
+            console.log(err);
+            toast.error(err?.response?.data?.error)
+        })
+  }
+
+  const copyToClipboard = async ()=>{
+          try {
+              let string = `http://localhost:5173/profile/${id}`
+              await navigator.clipboard.writeText(string);
+              toast.success('Copied to Clipboard!');
+          } catch (err) {
+              console.error('Failed to copy!', err);
+          }
+      }
+
   return (
     <div className='px-5 xl:px-50 py-5 mt-5 flex flex-col gap-5 w-full pt-12 bg-gray-100'>
       <div className='flex justify-between'>
@@ -204,9 +224,9 @@ const Profile = () => {
                     <div className='md:flex w-full justify-between'>
                       <div className='my-5 flex gap-5'>
                         <div className='cursor-pointer p-2 border rounded-lg bg-blue-800 text-white font-semibold'>Open to</div>
-                        <div className='cursor-pointer p-2 border rounded-lg bg-blue-800 text-white font-semibold'>Share</div>
+                        <div onClick={copyToClipboard} className='cursor-pointer p-2 border rounded-lg bg-blue-800 text-white font-semibold'>Share</div>
                         {
-                          userData?._id === ownData?._id && <div className='cursor-pointer p-2 border rounded-lg bg-blue-800 text-white font-semibold'>Logout</div>
+                          userData?._id === ownData?._id && <div onClick={handleLogout} className='cursor-pointer p-2 border rounded-lg bg-blue-800 text-white font-semibold'>Logout</div>
                         }
                       </div>
 
@@ -282,9 +302,11 @@ const Profile = () => {
 
               </div>
 
-              <div className="w-full flex justify-center items-center">
-                <Link to={`/profile/${id}/activity`} className="p-2 rounded-xl cursor-pointer hover:bg-gray-300">Show All Posts <ArrowRightAlt /></Link>
-              </div>
+              {
+                postData.length > 5 && <div className="w-full flex justify-center items-center">
+                  <Link to={`/profile/${id}/activity`} className="p-2 rounded-xl cursor-pointer hover:bg-gray-300">Show All Posts <ArrowRightAlt /></Link>
+                </div>
+              }
             </Card>
           </div>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, use } from 'react'
 import './navbar2.css'
 import HomeIcon from '@mui/icons-material/Home';
 import GroupIcon from '@mui/icons-material/Group';
@@ -6,6 +6,7 @@ import WorkIcon from '@mui/icons-material/Work';
 import MessageIcon from '@mui/icons-material/Message';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Link, useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 const Navbar2 = () => {
 
@@ -13,6 +14,36 @@ const Navbar2 = () => {
   const location = useLocation()
 
   const [userData, setUserData] = useState(null);
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedTerm, setDebouncedTerm] = useState('');
+  const [searchUser, setSearchUser] = useState([]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedTerm(searchTerm);
+    }, 1000);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchTerm]);
+
+  const searchAPICall = async () => {
+    await axios.get(`http://localhost:4000/api/auth/findUser?query=${debouncedTerm}`, { withCredentials: true }).then(res => {
+      console.log(res);
+      setSearchUser(res.data.users)
+    }).catch(err => {
+      console.log(err);
+      alert(err?.response?.data?.error)
+    })
+  }
+
+  useEffect(() => {
+    if (debouncedTerm) {
+      searchAPICall()
+    }
+  }, [debouncedTerm]);
 
   useEffect(() => {
     let userData = localStorage.getItem('userInfo')
@@ -26,13 +57,19 @@ const Navbar2 = () => {
           <img className='w-8 h-8' src={'https://freelogopng.com/images/all_img/1656994981linkedin-icon-png.png'} alt="logo" />
         </Link>
         <div className='relative'>
-          <input className='searchInput w-70 bg-gray-100 rounded-sm h-10 px-4' placeholder='Search' />
+          <input value={searchTerm} onChange={(e) => { setSearchTerm(e.target.value) }} className='searchInput w-70 bg-gray-100 rounded-sm h-10 px-4' placeholder='Search' />
           {
-            dropdown && <div className='absolute w-88 left-0 bg-gray-200'>
-              <div className='flex gap-2 mb-1 cursor-pointer items-center'>
-                <div><img className='w-10 h-10 rounded-full' src="http://res.cloudinary.com/dbraoytbj/image/upload/v1747213557/xwyq1qwjpsythq3dmroo.png" alt="img" /></div>
-                <div>Danish</div>
-              </div>
+            searchUser.length > 0 && debouncedTerm.length !==0 && <div className='absolute w-88 left-0 bg-gray-200'>
+              {
+                searchUser.map((item, index) => {
+                  return (
+                    <Link to={`/profile/${item?._id}`} key={index} className='flex gap-2 mb-1 cursor-pointer items-center' onClick={()=>setSearchTerm("")}>
+                      <div><img className='w-10 h-10 rounded-full' src={item?.profilePic} alt="img" /></div>
+                      <div>{item?.f_name}</div>
+                    </Link>
+                  );
+                })
+              }
             </div>
           }
         </div>

@@ -4,6 +4,7 @@ import ProfileCard from '../../components/ProfileCard/ProfileCard'
 import { useParams } from 'react-router-dom'
 import Card from '../../components/Card/Card'
 import Post from '../../components/Post/Post'
+import axios from 'axios'
 
 
 const AllActivity = () => {
@@ -15,7 +16,7 @@ const AllActivity = () => {
     const fetchDataOnLoad = async () => {
         await axios.get(`http://localhost:4000/api/post/getAllPostForUser/${id}`).then(res => {
             console.log(res);
-
+            setPosts(res.data.posts)
         }).catch(err => {
             console.log(err);
             toast.error(err?.response?.data?.error)
@@ -23,7 +24,10 @@ const AllActivity = () => {
     }
 
     useEffect(() => {
-        fetchDataOnLoad()
+        fetchDataOnLoad();
+
+        let userData = localStorage.getItem('userInfo')
+        setOwnData(userData ? JSON.parse(userData) : null)
     }, [id])
 
     return (
@@ -50,9 +54,11 @@ const AllActivity = () => {
 
                             {
                                 post.map((item, index) => {
-                                    <div key={index}>
-                                        <Post />
-                                    </div>
+                                    return (
+                                        <div key={index}>
+                                            <Post item={item} personalData={ownData} />
+                                        </div>
+                                    )
                                 })
                             }
 

@@ -71,6 +71,16 @@ const Post = ({ profile, item, key, personalData }) => {
         });
     }
 
+    const copyToClipboard = async ()=>{
+        try {
+            let string = `http://localhost:5173/profile/${item?.user?._id}/activity/${item?._id}`
+            await navigator.clipboard.writeText(string);
+            toast.success('Copied to Clipboard!');
+        } catch (err) {
+            console.error('Failed to copy!', err);
+        }
+    }
+
     const desc = item?.desc;
 
     return (
@@ -111,7 +121,7 @@ const Post = ({ profile, item, key, personalData }) => {
                 !profile && <div className='flex p-1'>
                     <div onClick={handleLikeFunc} className='w-[33%] justify-center flex gap-2 items-center border-r border-gray-100 p-2 cursor-pointer hover:bg-gray-100'>{liked ? <ThumbUpIcon sx={{ fontSize: 22, color: "blue" }} /> : <ThumbUpOutlinedIcon sx={{ fontSize: 22 }} />} <span>{liked ? 'Liked' : 'Like'}</span></div>
                     <div onClick={handleCommentBoxOpenClose} className='w-[33%] justify-center flex gap-2 items-center border-r border-gray-100 p-2 cursor-pointer hover:bg-gray-100'><CommentIcon sx={{ fontSize: 22 }} /> <span>Comment</span></div>
-                    <div className='w-[33%] justify-center flex gap-2 items-center border-r border-gray-100 p-2 cursor-pointer hover:bg-gray-100'><SendIcon sx={{ fontSize: 22 }} /> <span>Share</span></div>
+                    <div onClick={copyToClipboard} className='w-[33%] justify-center flex gap-2 items-center border-r border-gray-100 p-2 cursor-pointer hover:bg-gray-100'><SendIcon sx={{ fontSize: 22 }} /> <span>Share</span></div>
                 </div>
             }
 
