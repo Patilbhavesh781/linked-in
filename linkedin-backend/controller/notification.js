@@ -36,7 +36,7 @@ exports.updateRead = async(req, res)=>{
 
 exports.activeNotify = async(req, res)=>{
     try{
-        let ownId = req.user.Id;
+        let ownId = req.user._id;
         let notifications = await NotificationModel.find({ receiver:ownId, isRead:false });
 
         return res.status(200).json({

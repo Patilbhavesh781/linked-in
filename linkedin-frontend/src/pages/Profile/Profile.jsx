@@ -381,7 +381,7 @@ const Profile = () => {
 
       {
         messageModal && <Modal title="Send Message" closeModal={handleMessageModal} >
-          <MessageModal />
+          <MessageModal selfData={ownData} userData={userData} />
         </Modal>
       }
 

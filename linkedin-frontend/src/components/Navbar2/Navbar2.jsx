@@ -19,6 +19,8 @@ const Navbar2 = () => {
   const [debouncedTerm, setDebouncedTerm] = useState('');
   const [searchUser, setSearchUser] = useState([]);
 
+  const [notificationCount, setNotificationCount] = useState("");
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedTerm(searchTerm);
@@ -45,9 +47,32 @@ const Navbar2 = () => {
     }
   }, [debouncedTerm]);
 
+  const fetchNotification = async ()=>{
+    await axios.get('http://localhost:4000/api/notification/activeNotification', {withCredentials:true}).then(res=>{
+      var count = res.data.count;
+      setNotificationCount(count)
+    }).catch(err => {
+      console.log(err);
+      alert(err?.response?.data?.error)
+    })
+  }
+
   useEffect(() => {
-    let userData = localStorage.getItem('userInfo')
-    setUserData(userData ? JSON.parse(userData) : null)
+    try {
+      const storedUser = localStorage.getItem('userInfo');
+      if (storedUser && storedUser !== 'undefined') {
+        const parsedUser = JSON.parse(storedUser);
+        setUserData(parsedUser && typeof parsedUser === 'object' ? parsedUser : null);
+      } else {
+        setUserData(null);
+      }
+    } catch (error) {
+      console.error('Failed to parse userInfo from localStorage', error);
+      localStorage.removeItem('userInfo');
+      setUserData(null);
+    }
+
+    fetchNotification()
   }, [])
 
   return (
@@ -97,7 +122,7 @@ const Navbar2 = () => {
         </Link>
 
         <Link to={'/notification'} className='flex flex-col items-center cursor-pointer'>
-          <div><NotificationsIcon sx={{ color: location.pathname === '/notification' ? "black" : "gray" }} /> <span className='p-1 rounded-full text-sm bg-red-700 text-white'>1</span> </div>
+          <div><NotificationsIcon sx={{ color: location.pathname === '/notification' ? "black" : "gray" }} /> {notificationCount>0 && <span className='p-1 rounded-full text-sm bg-red-700 text-white'>{notificationCount}</span>} </div>
           <div className={`text-sm text-gray-500 ${location.pathname === '/notification' ? "border-b-3" : ""}`}>Notification</div>
         </Link>
 

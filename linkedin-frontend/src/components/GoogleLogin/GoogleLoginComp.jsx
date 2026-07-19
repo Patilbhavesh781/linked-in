@@ -12,8 +12,13 @@ const GoogleLoginComp = (props) => {
     const res = await axios.post('http://localhost:4000/api/auth/google', { token }, {withCredentials: true});
 
     console.log(res);
+    const user = res?.data?.user ?? res?.data?.userExist ?? null;
     localStorage.setItem('isLogin', 'true');
-    localStorage.setItem("userInfo", JSON.stringify(res.data.user));
+    if (user) {
+      localStorage.setItem("userInfo", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("userInfo");
+    }
     props.changeLoginValue(true);
     navigate('/feed');
   }

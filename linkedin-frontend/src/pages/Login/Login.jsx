@@ -20,9 +20,14 @@ const Login = (props) => {
       return toast.error("Please fill all credentials")
     }
     await axios.post('http://localhost:4000/api/auth/login', loginField, {withCredentials:true}).then((res) => {
+      const user = res?.data?.user ?? res?.data?.userExist ?? null;
       props.changeLoginValue(true);
       localStorage.setItem('isLogin', 'true');
-      localStorage.setItem("userInfo", JSON.stringify(res.data.user));
+      if (user) {
+        localStorage.setItem("userInfo", JSON.stringify(user));
+      } else {
+        localStorage.removeItem("userInfo");
+      }
       navigate('/feed')
       
     }).catch(err => {
