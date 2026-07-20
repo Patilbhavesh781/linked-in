@@ -4,6 +4,16 @@ const express = require('express');
 require('dotenv').config();
 require('./connection.js');
 const app = express();
+const {Server} = require('socket.io');
+const http = require("http");
+
+const server = http.createServer(app);
+const io = new Server(server,{
+    cors:{
+        origin:"http://localhost:5173",
+        methods:['GET','POST'],
+    }
+})
 
 const PORT = process.env.PORT || 4000;
 
@@ -14,6 +24,21 @@ app.use(cors({
     credentials: true,
     origin: "http://localhost:5173" 
 }))
+
+io.on('connection',(socket)=>{
+    console.log("User Connected")
+
+    socket.on("joinConversation",(conversationId)=>{
+        console.log(`User joined Conversation ID of ${conversationId}`)
+        socket.join(conversationId)
+    })
+
+    socket.on("sendMessage",(convId, messageDetail)=>{
+        console.log("Message Sent")
+
+        io.to(convId).emit("receiveMessage",messageDetail)
+    })
+})
 
 const UserRoutes = require('./routes/user');
 const PostRoutes = require('./routes/post');
@@ -29,6 +54,6 @@ app.use('/api/comment', CommentRoutes);
 app.use('/api/conversation', ConversationRoutes);
 app.use('/api/message', MessageRoutes);
 
-app.listen(PORT, (req,res)=>{
+server.listen(PORT, (req,res)=>{
     console.log(`server is running on port ${PORT}`)
 })

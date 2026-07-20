@@ -14,78 +14,82 @@ const cookieOptions = {
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-exports.loginThroughGmail = async (req, res)=>{
-    try{
-        const {token} = req.body;
+exports.loginThroughGmail = async (req, res) => {
+    try {
+        const { token } = req.body;
         const ticket = await client.verifyIdToken({
             idToken: token,
             audience: process.env.GOOGLE_CLIENT_ID
         });
         const payload = ticket.getPayload();
 
-        const {sub, email, name, picture} = payload;
+        const { sub, email, name, picture } = payload;
 
-        let userExist = await User.findOne({email});
+        let userExist = await User.findOne({ email });
 
-        if(!userExist){
+        if (!userExist) {
             //Register new User
-          userExist = await User.create({
-            googleId: sub,
-            email,
-            f_name: name,
-            profilePic: picture
-          });
+            userExist = await User.create({
+                googleId: sub,
+                email,
+                f_name: name,
+                profilePic: picture
+            });
         }
-        let jwttoken = jwt.sign({ userId: userExist._id}, process.env.JWT_TOKEN);
-            res.cookie('token', jwttoken, cookieOptions);
-        return res.status(200).json({user: userExist});
-        
-    }catch(err){
+        let jwttoken = jwt.sign({ userId: userExist._id }, process.env.JWT_TOKEN);
+        res.cookie('token', jwttoken, cookieOptions);
+        return res.status(200).json({ user: userExist });
+
+    } catch (err) {
         console.error(err);
-        res.status(500).json({error: 'server error', message:err.message});
+        res.status(500).json({ error: 'server error', message: err.message });
     }
 }
 
-exports.register = async (req, res)=>{
-    try{
-        let {email,password,f_name} = req.body;
-        let isUserExist = await User.findOne({email});
-        if(isUserExist){
-            return res.status(400).json({error: "Already have an account with this email."});
+exports.register = async (req, res) => {
+    try {
+        let { email, password, f_name } = req.body;
+        let isUserExist = await User.findOne({ email });
+        if (isUserExist) {
+            return res.status(400).json({ error: "Already have an account with this email." });
         }
-        const hashedPassword = await bcryptjs.hash(password,10);
-        
-        const newUser = new User({email,password:hashedPassword,f_name});
+        const hashedPassword = await bcryptjs.hash(password, 10);
+
+        const newUser = new User({ email, password: hashedPassword, f_name });
         await newUser.save();
 
-        return res.status(201).json({message:"User registered Successfully!", success:"yes", data: newUser });
-    }catch(err){
+        return res.status(201).json({ message: "User registered Successfully!", success: "yes", data: newUser });
+    } catch (err) {
         console.error(err);
-        res.status(500).json({error: 'server error', message:err.message});
+        res.status(500).json({ error: 'server error', message: err.message });
     }
 };
 
 
-exports.login = async (req,res)=>{
-    try{
-        let {email,password} = req.body;
-        const userExist = await User.findOne({email});
-        
-        if(userExist && await bcryptjs.compare(password,userExist.password)){
-            let token = jwt.sign({ userId: userExist._id}, process.env.JWT_TOKEN);
-            res.cookie('token', token, cookieOptions);
-            return res.json({message: "Logged in Successfully", success:'true', user: userExist, userExist });
-        }else{
-            return res.status(400).json({error: 'Invalid Credentials'});
+exports.login = async (req, res) => {
+    try {
+        let { email, password } = req.body;
+        const userExist = await User.findOne({ email });
+
+        if (userExist && !userExist.password) {
+            return res.status(400).json({ error: 'Please Signin With Google' });
         }
-    }catch(err){
+
+        if (userExist && await bcryptjs.compare(password, userExist.password)) {
+            let token = jwt.sign({ userId: userExist._id }, process.env.JWT_TOKEN);
+            res.cookie('token', token, cookieOptions);
+            return res.json({ message: "Logged in Successfully", success: 'true', user: userExist, userExist });
+        } else {
+            return res.status(400).json({ error: 'Invalid Credentials' });
+        }
+    } catch (err) {
         console.error(err);
-        res.status(500).json({error: 'server error', message:err.message});
+        res.status(500).json({ error: 'server error', message: err.message });
     }
 }
 
-exports.updateUser = async (req, res)=>{
-    try{
+exports.updateUser = async (req, res) => {
+    try {
         const { user } = req.body;
         const isExist = await User.findById(req.user._id);
         if (!isExist) {
@@ -99,81 +103,81 @@ exports.updateUser = async (req, res)=>{
             message: "User Updated Successfully",
             user: userData
         })
-    }catch(err){
+    } catch (err) {
         console.log(err);
-        res.status(500).json({error: 'server error', message:err.message});
+        res.status(500).json({ error: 'server error', message: err.message });
     }
 }
 
-exports.getProfileById = async(req, res)=>{
-    try{
+exports.getProfileById = async (req, res) => {
+    try {
         const { id } = req.params;
         const isExist = await User.findById(id);
-        if(!isExist) {
+        if (!isExist) {
             return res.status(400).json({ error: 'No Such User exist' });
         }
         return res.status(200).json({
             message: "User Fetched Successfully",
             user: isExist
         });
-    }catch(err){
+    } catch (err) {
         console.log(err);
-        res.status(500).json({error: 'server error', message:err.message});
+        res.status(500).json({ error: 'server error', message: err.message });
     }
 }
 
-exports.logout = async(req, res)=>{
-    res.clearCookie('token', cookieOptions).json({ message : 'Logged Out Successfully' });
-     
+exports.logout = async (req, res) => {
+    res.clearCookie('token', cookieOptions).json({ message: 'Logged Out Successfully' });
+
 }
 
 
-exports.findUser = async(req, res)=>{
-    try{
+exports.findUser = async (req, res) => {
+    try {
         let { query } = req.query;
         const users = await User.find({
-            $and:[
-                {_id: {$ne:req.user._id} },
+            $and: [
+                { _id: { $ne: req.user._id } },
                 {
                     $or: [
-                        { name: { $regex: new RegExp(`^${query}`, 'i' ) } },
-                        { email: { $regex: new RegExp(`^${query}`, 'i' ) } }
+                        { name: { $regex: new RegExp(`^${query}`, 'i') } },
+                        { email: { $regex: new RegExp(`^${query}`, 'i') } }
                     ]
                 }
             ]
         });
         return res.status(201).json({
             message: "Fetched Member",
-            users:users
+            users: users
         });
 
-    }catch(err){
+    } catch (err) {
         console.log(err);
-        res.status(500).json({error: 'server error', message:err.message});
+        res.status(500).json({ error: 'server error', message: err.message });
     }
 }
 
 
-exports.sendFriendRequest = async(req, res)=>{
-    try{
+exports.sendFriendRequest = async (req, res) => {
+    try {
         const sender = req.user._id;
         const { receiver } = req.body;
 
         const userExist = await User.findById(receiver);
-        if ( !userExist ) {
+        if (!userExist) {
             return res.status(400).json({
                 error: "No such User Exist."
             });
         };
         const index = req.user.friends.findIndex(id => id.equals(receiver));
-        if ( index !== -1 ) {
+        if (index !== -1) {
             return res.status(400).json({
                 error: "Already Friend"
             });
         }
         const lastIndex = userExist.pending_friends.findIndex(id => id.equals(req.user._id));
 
-        if ( lastIndex !== -1 ) {
+        if (lastIndex !== -1) {
             return res.status(400).json({
                 error: "Already sent Request"
             });
@@ -192,28 +196,28 @@ exports.sendFriendRequest = async(req, res)=>{
         });
 
 
-    }catch(err){
+    } catch (err) {
         console.log(err);
-        res.status(500).json({error: 'server error', message:err.message});
+        res.status(500).json({ error: 'server error', message: err.message });
     }
 }
 
 
-exports.acceptFriendRequest = async(req, res)=>{
-    try{
+exports.acceptFriendRequest = async (req, res) => {
+    try {
         let { friendId } = req.body;
         let selfId = req.user._id;
 
         const friendData = await User.findById(friendId);
-        if ( !friendData ) {
+        if (!friendData) {
             return res.status(400).json({
                 error: "No such user exist"
             });
         }
 
-        const index = req.user.pending_friends.findIndex( id => id.equals(friendId));
+        const index = req.user.pending_friends.findIndex(id => id.equals(friendId));
 
-        if ( index !== -1 ) {
+        if (index !== -1) {
             req.user.pending_friends.splice(index, 1);
         } else {
             return res.status(400).json({
@@ -237,48 +241,48 @@ exports.acceptFriendRequest = async(req, res)=>{
             message: "You both are connected now"
         });
 
-    }catch(err){
+    } catch (err) {
         console.log(err);
-        res.status(500).json({error: 'server error', message:err.message});
+        res.status(500).json({ error: 'server error', message: err.message });
     }
 }
 
 
-exports.getFriendsList = async(req, res)=>{
-    try{
+exports.getFriendsList = async (req, res) => {
+    try {
         let friendsList = await req.user.populate("friends");
         return res.status(200).json({
             friends: friendsList.friends
         });
 
-    }catch(err){
+    } catch (err) {
         console.log(err);
-        res.status(500).json({error: 'server error', message:err.message});
+        res.status(500).json({ error: 'server error', message: err.message });
     }
 }
 
 
-exports.getPendingFriendList = async(req, res)=>{
-    try{
+exports.getPendingFriendList = async (req, res) => {
+    try {
         let pendingFriendsList = await req.user.populate("pending_friends");
         return res.status(200).json({
             pending_friends: pendingFriendsList.pending_friends
         });
 
-    }catch(err){
+    } catch (err) {
         console.log(err);
-        res.status(500).json({error: 'server error', message:err.message});
+        res.status(500).json({ error: 'server error', message: err.message });
     }
 }
 
 
-exports.removeFromFriend = async(req, res)=>{
-    try{
+exports.removeFromFriend = async (req, res) => {
+    try {
         let selfId = req.user._id;
         let { friendId } = req.params;
 
         const friendData = await User.findById(friendId);
-        if ( !friendData ) {
+        if (!friendData) {
             return res.status(400).json({
                 error: "No such User Exist"
             });
@@ -286,7 +290,7 @@ exports.removeFromFriend = async(req, res)=>{
 
         const index = req.user.friends.findIndex(id => id.equals(friendId));
         const friendIndex = friendData.friends.findIndex(id => id.equals(selfId));
-        if ( index !== -1 ) {
+        if (index !== -1) {
             req.user.friends.splice(index, 1);
         } else {
             return res.status(400).json({
@@ -294,7 +298,7 @@ exports.removeFromFriend = async(req, res)=>{
             });
         }
 
-        if ( friendIndex !== -1 ) {
+        if (friendIndex !== -1) {
             friendData.friends.splice(friendIndex, 1);
         }
 
@@ -303,9 +307,9 @@ exports.removeFromFriend = async(req, res)=>{
         return res.status(200).json({
             message: "You both are disconnected now."
         });
-        
-    }catch(err){
+
+    } catch (err) {
         console.log(err);
-        res.status(500).json({error: 'server error', message:err.message});
+        res.status(500).json({ error: 'server error', message: err.message });
     }
 }

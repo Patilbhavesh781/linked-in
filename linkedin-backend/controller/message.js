@@ -7,7 +7,7 @@ exports.sendMessage = async(req, res)=>{
         let addMessage = new MessageModel({ sender:req.user._id, conversation, message, picture });
         await addMessage.save();
         let populatedMessage = await addMessage.populate("sender");
-        return res.status(201).json({ populatedMessage });
+        return res.status(201).json({ message: populatedMessage });
 
     }catch(err){
         console.log(err);
@@ -19,10 +19,10 @@ exports.sendMessage = async(req, res)=>{
 exports.getMessage = async(req, res)=>{
     try{
         let { convId } = req.params;
-        let message = await MessageModel.find({
+        let messages = await MessageModel.find({
             conversation: convId
         }).populate("sender");
-        return res.status(201).json({message:"Fetched Successfully.", message });
+        return res.status(200).json({ messages });
 
     }catch(err){
         console.log(err);
